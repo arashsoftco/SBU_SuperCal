@@ -67,7 +67,13 @@ void loop()
 
 
 
-String c="";
+String Fnum="";
+String Snum="";
+
+bool FNumisFixed=0;
+bool SNumisFixed=0;
+int op;
+bool eq=0;
 
 void Drawi(int a) 
 {
@@ -85,53 +91,102 @@ if (a>=10)
   display.setTextSize(8); 
   
   switch(a)
-{
-  case(11):
-     display.print(" + ");
-     break;
-  
-   
-  case(12):
-     display.print(" - ");
-     break;
-  
-   
-  case(13):
-     display.print(" X ");
-     break;
-
-     case(14):
-     display.print(" / ");
-     break;
-
+          {
+               case(11):
+                {
+                  display.print(" + ");
+                   op=11;
+                   break;
+                }
      
-     case(18):
-    {
-      display.print("0x88");
-       break;
-    }
+  
+   
+                case(12):
+                {
+                   display.print(" - ");
+                   op=12;
+                   break;
+                }
+    
+  
+   
+                case(13):
+                {
+                   display.print(" X ");
+                   op=13;
+                   break;
+                }
+                  
+
+                   case(14):
+                   {
+                     display.print(" / ");
+                     op=14;
+                   break;
+                   }
+                  
+                 case(17):
+                  {
+                    SNumisFixed=1;
+                    FNumisFixed=1;
+                     eq=1;
+                    display.print(" =");
+                     break;
+                  }
+     
+                   case(18):
+                  {
+                  op=18;
+                    display.print("0x88");
+                     break;
+                  }
     
      
-     case(19):
-     {
-        display.setCursor(10, 10); 
-        display.setTextSize(3); 
-      display.print("A ^ B");
-     break;
-     }
+                   case(19):
+                   {
+                    op=19;
+                      display.setCursor(10, 10); 
+                      display.setTextSize(3); 
+                    display.print("A ^ B");
+                   break;
+                   }
+                   
      
-     
-}
+       }
 
 }
+
+
+/// if was a range
+
 else
 {
-   c+=String(a);
-   
- display.print(c);
+  if(!FNumisFixed)
+  {  
+    
+    Fnum+=String(a);
+   display.print(Fnum);
+    
+  }
 
+ if(!SNumisFixed)
+  {  
+    
+    Snum+=String(a);
+   display.print(Snum);
+    
+  }
 
 } 
+
+
+//////////
+if(!eq)
+{
+  switch(op)
+  case(0):
+  break;
+}
 
 display.display();
     delay(2000);
