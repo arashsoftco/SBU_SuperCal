@@ -1,371 +1,151 @@
 
 
-#include <SPI.h>
-#include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
 
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 64 
-
-#define OLED_MOSI   9
-#define OLED_CLK   10
-#define OLED_DC    11
-#define OLED_CS    12
-#define OLED_RESET 13
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
-  OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
-
-
-
-
-
-
-
-String Regulator(String a , int b)
+void reverseStr(String &str)
 {
+    Serial.println("Reverce Loading....");
+      Serial.println(str);
+    int n = str.length();
+    for (int i = 0; i < n / 2; i++)
+    {
+      char temp = str[i];
+      str[i]=str[n - i - 1];
+       str[n - i - 1]=temp;
+    }
+  Serial.println(str);
+        Serial.println("Reverse Fin....");
+}
 
-  Serial.println("Regulator...");
-  
-  String temp="";
+////////////////////////////////////
 
-  for (int i=0 ; i<b ; i++)
-  {
-  temp+="0";    
-  }
-
-  temp +=a;
-  a=temp;
-
-
-  Serial.println("Regulator...  FIN");
-  return a;
+String sub(String a,String b) 
+{
+    String ans;
+    int s_int,reserv=0;
+    char s_char;
+    for(int i=1;i<=b.length();i++)
+    {
+        s_int = a[a.length()-i]-'0' - (b[b.length()-i]-'0') + reserv;
+        if(s_int <0)
+        {
+            s_int +=10;
+            reserv = -1;
+        }
+        else
+        {
+            reserv = 0;
+        }
+        s_char = s_int + '0';
+        ans+=s_char;
+    }
+    for(int i=b.length()+1;i<=a.length();i++)
+    {
+        s_int = a[a.length()-i] - '0'+ reserv;
+        if(s_int <0)
+        {
+            s_int +=10;
+            reserv = -1;
+        }
+        else
+        {
+            reserv = 0;
+        }
+        s_char = s_int + '0';
+        ans+=s_char;
+    }
+    reverseStr(ans);
+    return ans;
 }
 
 
+///////////////////////////////////////////
 String sum(String a,String b)
 {
-  
-  Serial.println("SUM F...");
-  int df= a.length()-b.length();
-   Serial.println(df);
-   
- if(df>0)
+  Serial.println("SUM Loading....");  
+
+   if (Fnum.length()<Snum.length() )
+                      {
+                        String temp= Snum;
+                        Snum=Fnum;
+                        Fnum=temp;
+                        rever=1;
+                        
+                      }
+
+                      
+    String ans;
+    int s_int,bishtar_az_10;
+    char s_char;
+    bishtar_az_10 = 0;
+    for(int i=1;i<=b.length();i++)
+    {
+        s_int = a[a.length()-i]-'0'+b[b.length()-i]-'0'+bishtar_az_10;
+        bishtar_az_10 = s_int/10;
+        s_int = s_int%10;
+        s_char = s_int+ '0';
+        ans+= s_char;
+         Serial.println("........ans till now is");
+           Serial.println(ans); 
+       
+    }
+    int i = b.length()+1;
+    b.remove(0);
+    for(i;i<=a.length();i++)
+    {    
+        s_int = a[a.length()-i]-'0' + bishtar_az_10;
+        bishtar_az_10 = s_int/10;
+        s_int = s_int%10;
+        s_char = s_int+ '0';
+        ans+= s_char;
+   a.remove(a.length());
+              Serial.println("........ans till now is");
+           Serial.println(ans);
+    }
+    if(bishtar_az_10 != 0 )
+    {
+        ans+= bishtar_az_10 + '0';
+    }
+    reverseStr(ans);
+    return ans;
+}
+
+
+////////////////////////////////////////
+
+String multi(String num1,String num2)
+{
+ String result;
+ if(num1.length()<num2.length())
  {
-Serial.println(" a > b ..");
- b= Regulator(b,a.length()-b.length());
-  
+  String temp = num2;
+  num2 = num1 ;
+  num1 = temp;
  }
+ ///comp(num1,num2);
+ int n1=num1.length(),n2=num2.length();
+ int carry=0;
+ for (int i=n2-1;i>=0;i--){
+  String temp;
 
- else
+for (int i=0;i<n2-i-1;i++)
 {
+  temp+="0";
+}
+  carry=0;
+  for (int j=n1-1;j>=0;j--){
+   int x=(num2[i]-'0')*(num1[j]-'0')+carry;
+   carry=x/10;
+   temp+=String(x%10);
  
-String temp;
- temp =  a ;
- a=b;
- b=temp;
+  } 
 
-Serial.println(" a replace b ..");
-   if(a.length()-b.length()>0)
- {
-    Serial.println("ABCD");
- b= Regulator(b,a.length()-b.length());
-  
+ temp+=carry+'0';
+  temp+=String(carry);
+
+
+  //reverse(temp.begin(),temp.end());
+ result=sum(result,temp);
  }
-
  
-}
-
-
-String c=" ";
-Serial.println("c created ..");
-for (int i=0; i<=a.length() ; i++)
-{
-  c+=" ";
-  
-}
-  Serial.println("C longer...");
-
-  
-  int D=0;
-bool maax=0;
-
-  for(  int si=a.length()-1 ; si>=0 ;si--)
-  {
-    int te =a[si]-'0'+b[si]-'0'+D;
-    D=te/10;
-    te=te%10;
-
-    c[si]=te+'0';
-    if (D==1 && si==0) maax=1;
-    
-    Serial.println("c char is ");
-     Serial.print(c[si]);
-     
-  }
-
-if (maax)
-   c="1"+c;
-
-
-Serial.println("......................C is ");
-Serial.print(c);
- return c;
-
-}
-
-
-
-
-void receiveEvent(int howMany)
-
-{
-  while (1 < Wire.available()) 
-  {
-    char c = Wire.read(); 
-    Serial.print(c);        
-  }
-  int x = Wire.read();
-  Serial.println(x);         
-  Drawi(x);
-
-  
-}
-
-
-void setup() {
-    Wire.begin(8);                // join i2c bus with address #8
-        
-  
-  Serial.begin(9600);
-
- 
-  if(!display.begin(SSD1306_SWITCHCAPVCC)) {
-    Serial.println(F("SSD1306 allocation failed"));
-    for(;;); // Don't proceed, loop forever
-  }
-
-
-  
-
-
-  display.clearDisplay();
-
-
-///SCroll();
-
-///Intro(); 
-
-Serial.print("Intro..");
-
-  Wire.onReceive(receiveEvent);
-}
-
-void loop()
-{
- delay(100); 
-}
-
-
-
-String Fnum="";
-String Snum="";
-
-bool FNumisFixed=0;
-bool SNumisFixed=0;
-int op;
-bool eq=0;
-
-void Drawi(int a) 
-{
-  display.clearDisplay();
-
-  display.setTextSize(1);     
-  display.setTextColor(WHITE);
-  display.setCursor(0, 0);    
-  display.cp437(true);        
-
-
-if (a>=10)
-{  
-  
-  display.setTextSize(8); 
-  
-  switch(a)
-          {
-               case(11):
-                {
-                  display.print(" + ");
-                   op=11;
-                       FNumisFixed=1;
-                   break;
-                }
-     
-  
-   
-                case(12):
-                {
-                   display.print(" - ");
-                   op=12;
-                   break;
-                }
-    
-  
-   
-                case(13):
-                {
-                   display.print(" X ");
-                   op=13;
-                   break;
-                }
-                  
-
-                   case(14):
-                   {
-                     display.print(" / ");
-                     op=14;
-                   break;
-                   }
-
-
-                    case(16):
-                  {
- Fnum="";
- Snum="";
-
-FNumisFixed=0;
-SNumisFixed=0;
- op;
- eq=0;
-    display.setTextSize(3); 
- display.print("Clear!");
-                 
-                     break;
-                  }
-
-
-                  
-                 case(17):
-                  {
-                    SNumisFixed=1;
-                    FNumisFixed=1;
-                     eq=1;
-
-String c = sum(Fnum,Snum);
-Serial.println("FNUm is ");
-Serial.print( FNumisFixed);
-Serial.println("SNUm is ");
-Serial.print( FNumisFixed);
-Serial.println("SUM is ");
-Serial.print( FNumisFixed);
-  display.clearDisplay();
-    display.setTextSize(1);  
- display.println(c);
-                
-                     break;
-                  }
-     
-                   case(18):
-                  {
-                  op=18;
-                    display.print("0x88");
-                     break;
-                  }
-    
-     
-                   case(19):
-                   {
-                    op=19;
-                      display.setCursor(10, 10); 
-                      display.setTextSize(3); 
-                    display.print("A ^ B");
-                   break;
-                   }
-                   
-     
-       }
-
-}
-
-
-/// if was a range
-
-else
-{
-  if(!FNumisFixed)
-  {  
-    
-    Fnum+=String(a);
-   display.print(Fnum);
-    
-  }
-
- if(FNumisFixed)
-  {  
-    
-    Snum+=String(a);
-   display.print(Snum);
-    
-  }
-
-} 
-
-
-//////////
-if(!eq)
-{
-  
-}
-
-display.display();
-    delay(2000);
-}
-
-void Intro(void) {
-  display.clearDisplay();
-
-  display.setTextSize(1);         
-
-  display.setCursor(0,0);            
-  display.println(F("Arashsoft EAI"));
-
- display.println(" ");
-
-  display.setTextSize(2);             
-  display.setTextColor(WHITE);
-  display.print("SBU");
- display.println("  ");
- 
-  display.setTextSize(2);            
-  display.setTextColor(WHITE);
-  display.println("Super Cal :)");
-  
-  display.display();
-  delay(2000);
-}
-
-void SCroll()
-{
-  display.clearDisplay();
-  display.setTextSize(2);
-  display.setCursor(10, 0);
-  display.println(F("Arashsoft EAI"));
-  display.display();    
-  delay(100);
-
-
-  display.startscrollright(0x00, 0x0F);
-  delay(2000);
-  display.stopscroll();
-  delay(1000);
-  display.startscrollleft(0x00, 0x0F);
-  delay(2000);
-  display.stopscroll();
-  delay(1000);
-  display.startscrolldiagright(0x00, 0x07);
-  delay(2000);
-  display.startscrolldiagleft(0x00, 0x07);
-  delay(2000);
-  display.stopscroll();
-  delay(1000);
+ return result;
 }
