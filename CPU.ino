@@ -31,7 +31,91 @@ void reverseStr(String &str)
 }
 
 
-String sum_pos(String a,String b)
+String mul(String num1,String num2)
+{
+ String result;
+ if(num1.length()<num2.length())
+ {
+  String temp = num2;
+  num2 = num1 ;
+  num1 = temp;
+ }
+ ///comp(num1,num2);
+ int n1=num1.length(),n2=num2.length();
+ int carry=0;
+ for (int i=n2-1;i>=0;i--){
+  String temp;
+
+for (int i=0;i<n2-i-1;i++)
+{
+  temp+="0";
+}
+  carry=0;
+  for (int j=n1-1;j>=0;j--){
+   int x=(num2[i]-'0')*(num1[j]-'0')+carry;
+   carry=x/10;
+   temp+=String(x%10);
+ 
+  } 
+
+ temp+=carry+'0';
+  temp+=String(carry);
+
+   
+   reverseStr(temp);
+
+  //reverse(temp.begin(),temp.end());
+ result=sum(result,temp);
+ }
+ 
+ return result;
+}
+
+
+
+
+String sub(String a,String b) 
+{
+    String ans;
+    int s_int,reserv=0;
+    char s_char;
+    for(int i=1;i<=b.length();i++)
+    {
+        s_int = a[a.length()-i]-'0' - (b[b.length()-i]-'0') + reserv;
+        if(s_int <0)
+        {
+            s_int +=10;
+            reserv = -1;
+        }
+        else
+        {
+            reserv = 0;
+        }
+        s_char = s_int + '0';
+        ans+=s_char;
+    }
+    for(int i=b.length()+1;i<=a.length();i++)
+    {
+        s_int = a[a.length()-i] - '0'+ reserv;
+        if(s_int <0)
+        {
+            s_int +=10;
+            reserv = -1;
+        }
+        else
+        {
+            reserv = 0;
+        }
+        s_char = s_int + '0';
+        ans+=s_char;
+    }
+    reverseStr(ans);
+    return ans;
+}
+
+
+
+String sum(String a,String b)
 {
   Serial.println("SUM Loading....");  
     String ans;
@@ -71,15 +155,9 @@ String sum_pos(String a,String b)
 }
 
 
-String sum(String a,String b) // do adad ba har sharayeti ro jam mikone
-{
-    String ans;
- 
-        ans = sum_pos(a,b);
-     Serial.println("ANS ..");
-       Serial.println(ans);
-    return ans;
-}
+
+
+
 void receiveEvent(int howMany)
 
 {
@@ -117,7 +195,40 @@ void Drawi(int a)
   display.setTextSize(1);   
   display.setTextColor(WHITE);
   display.setCursor(0, 0);    
-  display.cp437(true);        
+  display.cp437(true); 
+
+         if (eq)
+
+         {
+            display.clearDisplay();
+            display.setTextColor(WHITE);
+                      display.setTextSize(2);
+                    //   display.println("Ram is       Full!!");
+                       display.println(" Ram is");
+                          display.println(" ");
+                             display.println("  FULL :(");
+          display.display();
+               if(a==16)
+                  {
+                      display.clearDisplay();
+                      Fnum="";
+                       Snum="";
+                      FNumisFixed=0;
+                      SNumisFixed=0;
+                       op;
+                       eq=0;
+                        display.setCursor(0, 0); 
+                        display.setTextSize(3);
+                       display.print("Clear!");
+                 Serial.println("////////////////////////////CLEAR..");
+                    
+                  }
+         }
+
+         else
+         {
+          
+         
 if (a>=10)
 {  
   
@@ -132,26 +243,39 @@ if (a>=10)
               
 
                 }
+      
         if (a==12)
                 {
                   display.print(" - ");
                    op=12;
-                       FNumisFixed=1;
-              
+                       FNumisFixed=1;           
+                }
 
+
+      if (a==13)
+                {
+                  display.print(" X ");
+                   op=13;
+                       FNumisFixed=1;   
+
+                        
+                              
+                                           
                 }
 
                 
+                
                    if(a==16)
                   {
- Fnum="";
- Snum="";
-FNumisFixed=0;
-SNumisFixed=0;
- op;
- eq=0;
-  display.setTextSize(3);
- display.print("Clear!");
+                ///    Clearing:
+                      Fnum="";
+                       Snum="";
+                      FNumisFixed=0;
+                      SNumisFixed=0;
+                       op;
+                       eq=0;
+                        display.setTextSize(3);
+                       display.print("Clear!");
                  Serial.println("////////////////////////////CLEAR..");
                     
                   }
@@ -160,6 +284,8 @@ SNumisFixed=0;
                   
                 if(a==17)
                   {
+                    bool rever=0;
+                    
                     SNumisFixed=1;
                     FNumisFixed=1;
                      eq=1;
@@ -169,15 +295,55 @@ SNumisFixed=0;
                         String temp= Snum;
                         Snum=Fnum;
                         Fnum=temp;
+                        rever=1;
+                        
                       }
- Serial.println(Fnum);
-  Serial.println("B");
- Serial.println(Snum);
- Serial.println("Ci is ..");
- Serial.println(sum(Fnum,Snum));
-  display.clearDisplay();
-  display.setTextSize(1);
- display.println(sum(Fnum,Snum));
+                       Serial.println(Fnum);
+                        Serial.println("B");
+                       Serial.println(Snum);
+
+                       if (op==11) //sum
+                       {
+                         Serial.println("Ci is ..");
+                       Serial.println(sum(Fnum,Snum));
+                        display.clearDisplay();
+                        display.setTextSize(1);
+                       display.println(sum(Fnum,Snum));
+                       display.display();
+                       }
+
+
+                      if (op==12) //sub
+                       {
+                     
+                         Serial.println("Ci is ..");
+                       Serial.println(sub(Fnum,Snum));
+                        display.clearDisplay();
+                        display.setTextSize(1);
+                           if (rever==1)
+                           {
+                              display.print("-");
+                           }
+                       display.println(sub(Fnum,Snum));
+                       display.display();
+                       }
+
+
+                           if (op==13) //mul
+                       {
+                     
+                         Serial.println("Ci is ..");
+                       Serial.println(mul(Fnum,Snum));
+                        display.clearDisplay();
+                        display.setTextSize(1);
+                           if (rever==1)
+                           {
+                              display.print("-");
+                           }
+                       display.println(mul(Fnum,Snum));
+                       display.display();
+                       }
+
                   }
        }
 
@@ -213,6 +379,7 @@ if(!eq)
   
 }
 
-display.display();
-   
+     }
+
+   display.display(); 
 }
